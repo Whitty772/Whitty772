@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POLYNOMIAL STORM - Quiz</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Overlay para transiciones de oscurecimiento -->
+    <div id="transition-overlay"></div>
+
+    <div id="intro-overlay">
+        <div id="intro-text">SI-IAP</div>
+    </div>
+
+    <!-- La funcionalidad de audio ha sido eliminada para evitar problemas de carga -->
+
+    <canvas id="rain-canvas"></canvas>
+    <canvas id="foreground-canvas"></canvas>
+
+    <div id="storm-overlay"></div>
+
+    <!-- Mensaje de Juego/Confirmación. El script.js lo usa para el hover y el feedback. -->
+    <div id="confirmation-message" class="hidden">
+        <p>¿Estás seguro que quieres jugar con esta dificultad?</p>
+    </div>
+
+    <!-- PANTALLA DE BIENVENIDA -->
+    <div id="welcome-container">
+        <header id="project-title">
+            <h1>POLYNOMIAL STORM</h1>
+            <h2>Interpolación y Aproximación Polinomial</h2>
+        </header>
+
+        <main id="quiz-container">
+            <p id="introduction-text">Prepárate para la tormenta del cálculo numérico. Responde correctamente para dominar la Aproximación Polinomial.</p>
+
+            <button id="start-quiz-btn" class="realistic-button">
+                ¿Jugamos?
+            </button>
+        </main>
+    </div>
+
+    <!-- PANTALLA DE SELECCIÓN DE DIFICULTAD -->
+    <section id="difficulty-screen" class="hidden">
+        <div style="margin-bottom: 50px;">
+             <p style="font-size: clamp(1.8rem, 6vw, 2.8rem); text-shadow: 0 0 10px #fff, 0 0 25px #fff;">¡Elige tu dificultad!</p>
+        </div>
+
+        <div id="difficulty-buttons">
+            <button id="btn-easy" class="difficulty-btn">FÁCIL-SABER</button>
+            <button id="btn-medium" class="difficulty-btn">MEDIO-APRENDER</button>
+            <button id="btn-hard" class="difficulty-btn">DIFÍCIL-LUCHAR</button>
+            <button id="btn-very-hard" class="difficulty-btn">EXTREMO-VIVIR</button>
+        </div>
+    </section>
+
+    <!-- PANTALLA DE INSTRUCCIONES (NUEVA) -->
+    <section id="instructions-screen" class="hidden">
+        <h1 class="instructions-title">¡PREPÁRATE!</h1>
+        <div class="instructions-grid">
+            <!-- Instrucción 1: Movimiento -->
+            <div class="instruction-item">
+                <div class="instruction-symbol spacebar"></div>
+                <p>Usa la <span class="key-name">barra espaciadora</span> para esquivar</p>
+            </div>
+
+            <!-- Instrucción 2: Aviso de Ataque -->
+            <div class="instruction-item">
+                <div class="instruction-symbol">△!</div>
+                <p>El <span class="symbol-name">△!</span> indica <span class="highlight">cuántos ataques</span> recibirás y <span class="highlight">cuándo</span></p>
+            </div>
+
+            <!-- Instrucción 3: Daño -->
+            <div class="instruction-item">
+                 <div class="instruction-symbol">💔</div>
+                 <p>Recibir un impacto reduce tu vida</p>
+            </div>
+        </div>
+        <div class="instructions-tip">
+            <p><span class="highlight">¡CUIDADO!</span> El enemigo es astuto y puede predecir tus movimientos.</p>
+        </div>
+        <button id="start-transmission-btn" class="realistic-button">INICIAR TRANSMISIÓN</button>
+    </section>
+
+    <!-- PANTALLA DEL CUESTIONARIO (AÑADIDA) -->
+    <section id="quiz-game-screen" class="hidden">
+        <div id="quiz-header">
+            <h3 id="current-difficulty">DIFICULTAD: INICIANDO</h3>
+            <div id="timer-container">
+                <p id="timer">0:00</p>
+            </div>
+            <div id="health-bar">
+                <!-- Los bloques de vida se inyectarán con JavaScript -->
+            </div>
+        </div>
+
+        <div id="question-container">
+            <p id="question-text">Pregunta de Ejemplo</p>
+            <div id="answer-options">
+                <button class="answer-btn" data-index="0">
+                    <span class="answer-text">Opción A</span>
+                    <div class="fugitive-eyes"><div class="eye"></div><div class="eye"></div></div>
+                </button>
+                <button class="answer-btn" data-index="1">
+                    <span class="answer-text">Opción B</span>
+                    <div class="fugitive-eyes"><div class="eye"></div><div class="eye"></div></div>
+                </button>
+                <button class="answer-btn" data-index="2">
+                    <span class="answer-text">Opción C</span>
+                    <div class="fugitive-eyes"><div class="eye"></div><div class="eye"></div></div>
+                </button>
+                <button class="answer-btn" data-index="3">
+                    <span class="answer-text">Opción D</span>
+                    <div class="fugitive-eyes"><div class="eye"></div><div class="eye"></div></div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Elementos del Minijuego de Esquivar -->
+        <div id="dodge-minigame-container">
+            <div id="player-character"></div>
+            <div id="attacker-character">
+                <div class="eye"></div>
+                <div class="eye"></div>
+            </div>
+            <div id="projectile"></div>
+            <div id="warning-sign" class="hidden"><span id="bullet-count"></span></div>
+        </div>
+
+        <!-- Animación del Péndulo de Tinta -->
+        <div id="ink-pendulum-container" class="hidden">
+            <div id="ink-pendulum"></div>
+        </div>
+
+        <!-- Botones de Prueba para el Prototipo (eliminados) -->
+    </section>
+
+    <!-- PANTALLA DE FIN DE JUEGO (AÑADIDA) -->
+    <section id="game-over-screen" class="hidden">
+        <h1 id="game-over-title">GAME OVER</h1>
+        <p id="game-over-text">La tormenta te ha superado. Vuelve a intentarlo.</p>
+        <button id="restart-btn" class="realistic-button">REINICIAR</button>
+    </section>
+
+    <!-- Elementos de Audio -->
+    <audio id="audio-intro" src="https://raw.githubusercontent.com/Whitty772/CatAlgebra/c68866e6170d26a96162d0d11118ee2f66723354/psrteinicial.mp3" preload="auto" loop></audio>
+    <audio id="audio-button-click" src="https://raw.githubusercontent.com/Whitty772/CatAlgebra/c68866e6170d26a96162d0d11118ee2f66723354/a.wav" preload="auto"></audio>
+    <audio id="audio-instructions" src="https://raw.githubusercontent.com/Whitty772/CatAlgebra/c68866e6170d26a96162d0d11118ee2f66723354/ssstik.io_1762910203781.mp3" preload="auto" loop></audio>
+    <audio id="audio-game-over" src="https://raw.githubusercontent.com/Whitty772/CatAlgebra/a563c682cce927036c2f9cf4017c0697203002f9/ssstik.io_1762922377102.mp3" preload="auto"></audio>
+    <audio id="audio-button-hover" src="https://raw.githubusercontent.com/Whitty772/CatAlgebra/a563c682cce927036c2f9cf4017c0697203002f9/videoplayback.m4a" preload="auto"></audio>
+    <audio id="audio-correct-answer" src="https://raw.githubusercontent.com/Whitty772/CatAlgebra/a563c682cce927036c2f9cf4017c0697203002f9/correct-156911.mp3" preload="auto"></audio>
+    <audio id="audio-incorrect-answer" src="https://raw.githubusercontent.com/Whitty772/CatAlgebra/a563c682cce927036c2f9cf4017c0697203002f9/error-012-132111.mp3" preload="auto"></audio>
+
+    <!-- Pistas de Música por Dificultad -->
+    <audio id="audio-music-easy" src="https://raw.githubusercontent.com/Whitty772/CatAlgebra/73df7e3785883e86b5377c7a0137712f551c948c/Fase1%20(online-audio-converter.com).mp3" preload="auto" loop></audio>
+    <audio id="audio-music-medium" src="https://raw.githubusercontent.com/Whitty772/CatAlgebra/73df7e3785883e86b5377c7a0137712f551c948c/Fase2%20(online-audio-converter.com).mp3" preload="auto" loop></audio>
+    <audio id="audio-music-hard" src="https://raw.githubusercontent.com/Whitty772/CatAlgebra/73df7e3785883e86b5377c7a0137712f551c948c/Fase3%20(online-audio-converter.com).mp3" preload="auto" loop></audio>
+    <audio id="audio-music-very-hard" src="https://raw.githubusercontent.com/Whitty772/CatAlgebra/73df7e3785883e86b5377c7a0137712f551c948c/WhatsApp%20Video%202025-11-12%20at%203.50.09%20AM%20(online-audio-converter.com).mp3" preload="auto" loop></audio>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
